@@ -1,0 +1,27 @@
+
+
+vector previo[];
+vector resultados[][];
+
+a = fopen(muestras-mysqladmin);
+procesar_lineas(a)
+
+function procesar_lineas(archivo) {
+    linea=leer_linea(archivo);
+    while(linea <> NULL) {
+        linea=leer_linea(a);
+        // linea contendria algo como "| Aborted_clients                                              | 2589                                                                         |"
+        if (linea_es_divisor_de_muestra(linea)) { // los "+----------------------+----------------+" que dividen los samples
+            continue;
+        }
+        vname = extraer_nombre(linea); // Aborted_clients
+        vvalue = extraer_valor(linea); // 2589
+        if (vname == "Variable_name") { // empieza un sample nuevo
+            cnt_columna++;
+            continue;
+        }
+        resultados[vname][cnt_columna]=vvalue - previo[vname];
+        previo[vname]=vvalue;    
+    }
+
+}
